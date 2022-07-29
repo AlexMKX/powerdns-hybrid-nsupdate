@@ -9,7 +9,7 @@ The authenticated updates controlled by the appropriate metas
 
 The unauthenticated updates are controlled in the way ALLOW-DNSUPDATE-FROM, by X-ALLOW-UNSIGNED-DNSUPDATE-FROM meta. 
 
-## Script requirements
+## Rquirements and installation
 ### Packages
 ```lua-http lua-json```
 
