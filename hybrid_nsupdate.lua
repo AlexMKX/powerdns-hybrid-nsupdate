@@ -1,5 +1,6 @@
 local api_key = os.getenv('UPDATE_POLICY_API_KEY')
 local server = os.getenv('UPDATE_POLICY_API')
+local tablex = require "pl.tablex"
 function get_meta(domain, name)
     local http_request = require "http.request"
     require "json"
@@ -17,15 +18,20 @@ function updatepolicy(input)
 
     if input:getTsigName():countLabels() > 0
     then
-        pdnslog("got Tsig " .. input:getTsigName():toStringNoDot())
+        pdnslog("Got Tsig " .. input:getTsigName():toStringNoDot())
         local allowed_tsigs_meta = get_meta(zone, 'TSIG-ALLOW-DNSUPDATE')
         pdnslog("Allowed tsigs: " .. table.concat(allowed_tsigs_meta, ', '))
         for k, v in pairs(allowed_tsigs_meta) do
             if v == input:getTsigName():toStringNoDot()
             then
-                pdnslog("allowed tsig " .. v .. " checking IPs")
+                pdnslog("Allowed tsig " .. v .. " checking IPs")
                 local allowed_dnsupdate_from_meta = get_meta(zone, 'ALLOW-DNSUPDATE-FROM')
-                pdnslog("Allowed signed dnsupdate-from" .. table.concat(allowed_dnsupdate_from_meta, ", "))
+                pdnslog("Allowed signed dnsupdate-from " .. table.concat(allowed_dnsupdate_from_meta, ", "))
+                if tablex.size(allowed_dnsupdate_from_meta) == 0
+                then
+                    pdnslog("No IP limit (ALLOW-DNSUPDATE-FROM is empty), allowing")
+                    return true
+                end
                 local mynetworks = newNMG()
                 mynetworks:addMasks(allowed_dnsupdate_from_meta)
                 if not mynetworks:match(input:getRemote())
@@ -43,7 +49,7 @@ function updatepolicy(input)
     end
 
     local unsigned_from = get_meta(zone, 'X-ALLOW-UNSIGNED-DNSUPDATE-FROM')
-    pdnslog("Allowed unsigned updates from: " .. table.concat(unsigned_from, ", "))
+    pdnslog("Allowed unsigned updates from " .. table.concat(unsigned_from, ", "))
     local mynetworks = newNMG()
     mynetworks:addMasks(unsigned_from)
     if not mynetworks:match(input:getRemote())
