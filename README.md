@@ -11,7 +11,7 @@ The unauthenticated updates are controlled in the way ALLOW-DNSUPDATE-FROM, by X
 
 ## Rquirements and installation
 ### Packages
-```lua-http lua-json```
+```lua-http lua-json lua-penlight```
 
 
 ### Environment variables
@@ -28,7 +28,7 @@ The unauthenticated updates are controlled in the way ALLOW-DNSUPDATE-FROM, by X
 ```
 FROM powerdns/pdns-auth-master
 USER root
-RUN apt-get -y install lua-http lua-json git
+RUN apt-get -y install lua-http lua-json lua-penlight git
 RUN git clone https://github.com/AlexMKX/powerdns-hybrid-nsupdate.git /opt/powerdns-hybrid-nsupdate
 USER pdns
 ```
