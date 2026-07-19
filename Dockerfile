@@ -13,11 +13,14 @@ USER root
 #   pl.tablex     -> lua-penlight
 #   http.request  -> lua-http
 #   json          -> lua-json
+# postgresql-client provides `psql`, used by the gpgsql schema-init Job to load
+# /usr/local/share/doc/pdns/schema.pgsql.sql into the CNPG database.
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
       lua-http \
       lua-json \
-      lua-penlight && \
+      lua-penlight \
+      postgresql-client && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
