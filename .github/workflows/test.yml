@@ -1,0 +1,13 @@
+name: test
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: hybrid_nsupdate integration tests (stock pdns-auth container)
+        run: bash tests/run.sh

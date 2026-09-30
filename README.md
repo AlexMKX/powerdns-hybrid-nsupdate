@@ -83,6 +83,22 @@ Default: `/etc/powerdns/policy/policy_data.lua`.
 lua-dnsupdate-policy-script = /path/to/hybrid_nsupdate.lua
 ```
 
+## Tests
+
+Integration tests run the script against a **real, stock**
+`powerdns/pdns-auth-51:5.1.3` container (gsqlite3 backend) with clients on
+fixed source IPs, and assert both the DNSUPDATE rcode and whether the record
+is actually present afterwards:
+
+```sh
+bash tests/run.sh
+```
+
+Requires `docker` (and `openssl` for the test TSIG secrets). No custom image
+is built and nothing is installed into the pdns container. On failure, pdns
+container logs are kept until the teardown trap runs; re-run
+`docker logs pdns-hn-main` while it is up for details.
+
 ### Kubernetes (stock image, ConfigMap) — outline
 
 Mount both `hybrid_nsupdate.lua` and `policy_data.lua` from a ConfigMap into the
